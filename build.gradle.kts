@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.8.10"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    id("maven-publish")
 }
 
 group = "aam"
@@ -20,4 +21,18 @@ tasks.test {
 
 kotlin {
     jvmToolchain(11)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.octa-one"
+            artifactId = "kmold"
+            version = "0.1"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
 }
