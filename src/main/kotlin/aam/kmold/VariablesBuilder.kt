@@ -60,7 +60,7 @@ class VariablesBuilder {
             } else {
                 when (line.lowercase()) {
                     "y" -> any[id] = true
-                    "f" -> any[id] = false
+                    "n" -> any[id] = false
                     else -> continue
                 }
             }
