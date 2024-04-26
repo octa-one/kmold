@@ -1,11 +1,11 @@
 plugins {
-    kotlin("jvm") version "1.8.10"
-    id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    kotlin("jvm") version "1.9.23"
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
     id("maven-publish")
 }
 
-group = "aam"
-version = "0.1"
+group = "com.github.octa-one"
+version = "0.2"
 
 repositories {
     mavenCentral()
@@ -20,7 +20,7 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
 
 publishing {
@@ -28,7 +28,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.octa-one"
             artifactId = "kmold"
-            version = "0.1"
+            version = "0.2"
 
             afterEvaluate {
                 from(components["java"])

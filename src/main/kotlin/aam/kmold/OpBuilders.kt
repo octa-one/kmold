@@ -17,6 +17,13 @@ class AppendBuilder(variableManager: VariableManager) : VariableManager by varia
     lateinit var to: String
 }
 
+class MarkedAppendBuilder(variableManager: VariableManager) : VariableManager by variableManager {
+
+    lateinit var marker: String
+    lateinit var content: String
+    lateinit var to: String
+}
+
 class InputBuilder<T : Any>(variableManager: VariableManager) : VariableManager by variableManager {
 
     lateinit var name: String

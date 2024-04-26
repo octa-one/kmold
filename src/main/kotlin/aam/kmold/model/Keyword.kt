@@ -7,9 +7,4 @@ enum class Keyword(val str: String) {
     ELIF("elif("),
     ELSE("else"),
     ENDIF("endif");
-
-    companion object {
-
-        val values: Array<Keyword> = values()
-    }
 }

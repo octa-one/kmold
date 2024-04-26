@@ -8,7 +8,7 @@ import aam.kmold.model.PlainNode
 import aam.kmold.model.TemplateNode
 import aam.kmold.model.Token
 
-fun buildTree(tokens: List<Token>): Node {
+internal fun buildTree(tokens: List<Token>): Node {
     val head = EmptyNode()
     val deque = ArrayDeque<ConditionNode>()
 

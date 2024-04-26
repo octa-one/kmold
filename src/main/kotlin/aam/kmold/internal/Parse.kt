@@ -5,7 +5,7 @@ import aam.kmold.model.Token
 import aam.kmold.util.safeSubstring
 import java.lang.StringBuilder
 
-fun parse(input: Sequence<String>): List<Token> {
+internal fun parse(input: Sequence<String>): List<Token> {
     val tokens = mutableListOf<Token>()
     val plainBuilder = StringBuilder()
 
@@ -69,7 +69,7 @@ fun parse(input: Sequence<String>): List<Token> {
 }
 
 private fun getKeywordOrNull(input: String, i: Int): Keyword? =
-    Keyword.values.firstOrNull { keyword ->
+    Keyword.entries.firstOrNull { keyword ->
         input.safeSubstring(i, i + keyword.str.length) == keyword.str
     }
 

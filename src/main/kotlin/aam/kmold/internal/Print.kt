@@ -8,7 +8,7 @@ import aam.kmold.model.Node
 import aam.kmold.model.PlainNode
 import aam.kmold.model.TemplateNode
 
-fun Appendable.write(head: Node, variableManager: VariableManager) {
+internal fun Appendable.write(head: Node, variableManager: VariableManager) {
     val deque = ArrayDeque<Node>()
     deque.addLast(head)
 

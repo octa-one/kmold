@@ -1,9 +1,11 @@
 package aam.kmold
 
 import aam.kmold.internal.buildTree
+import aam.kmold.internal.endsWithNewLine
 import aam.kmold.internal.parse
 import aam.kmold.internal.write
 import java.io.File
+import java.io.FileOutputStream
 
 class RecipeBuilder(
     private val moldExtension: String,
@@ -22,7 +24,41 @@ class RecipeBuilder(
 
     fun append(block: AppendBuilder.() -> Unit) {
         val append = AppendBuilder(variableManager).apply(block)
-        basePathFile.resolve(append.to).appendText("\n" + append.content)
+        val file = basePathFile.resolve(append.to)
+        val endsWithNewLine = endsWithNewLine(file)
+        FileOutputStream(file, true).bufferedWriter().use { writer ->
+            if (!endsWithNewLine) writer.appendLine()
+            writer.appendLine(append.content)
+        }
+        println("Appended: ${append.to}")
+    }
+
+    fun appendAfterMarker(block: MarkedAppendBuilder.() -> Unit) {
+        val append = MarkedAppendBuilder(variableManager).apply(block)
+        val file = basePathFile.resolve(append.to)
+        val tempFile = file.resolveSibling(".temp_mold")
+
+        val reader = file.bufferedReader()
+        val writer = tempFile.bufferedWriter()
+
+        try {
+            reader.lineSequence().forEach { line ->
+                val contentIndex = line.indexOfFirst { !it.isWhitespace() }
+                if (line.startsWith(append.marker, startIndex = contentIndex)) {
+                    writer.appendLine(append.content)
+                    repeat(contentIndex) { writer.append(' ') }
+                    writer.appendLine(append.marker)
+                } else {
+                    writer.appendLine(line)
+                }
+            }
+        } finally {
+            reader.close()
+            writer.close()
+        }
+
+        tempFile.copyTo(file, overwrite = true)
+        tempFile.delete()
         println("Appended: ${append.to}")
     }
 
@@ -76,13 +112,15 @@ class RecipeBuilder(
     }
 
     private fun instantiateFile(from: File, to: File) {
-        val fromReader = from.bufferedReader()
-        val toWriter = to.bufferedWriter()
+        val reader = from.bufferedReader()
+        val writer = to.bufferedWriter()
 
-        parseAndWrite(fromReader.lineSequence(), toWriter)
-
-        fromReader.close()
-        toWriter.close()
+        try {
+            parseAndWrite(reader.lineSequence(), writer)
+        } finally {
+            reader.close()
+            writer.close()
+        }
     }
 
     private fun parseAndWrite(input: Sequence<String>, output: Appendable) {
